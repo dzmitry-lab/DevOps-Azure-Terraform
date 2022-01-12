@@ -30,17 +30,17 @@ stages :
       - task: TerraformInstaller@0
         displayName: 'install'
         inputs:
-          terraformVersion: ${{ variables.terraform_version}}
+          terraformVersion: $(terraform_version)
       - task: TerraformTaskV2@2
         displayName: 'init'
         inputs:
           provider: 'azurerm'
           command: 'init'
-          backendServiceArm: ${{ variables.backendServiceArm }}
-          backendAzureRmResourceGroupName: ${{ variables.backendAzureRmResourceGroupName }}
-          backendAzureRmStorageAccountName: ${{ variables.backendAzureRmStorageAccountName }}
-          backendAzureRmContainerName: ${{ variables.backendAzureRmContainerName }}
-          backendAzureRmKey: ${{ variables.backendAzureRmKey }}
+          backendServiceArm: $(variables.backendServiceArm)
+          backendAzureRmResourceGroupName: $(variables.backendAzureRmResourceGroupName)
+          backendAzureRmStorageAccountName: $(variables.backendAzureRmStorageAccountName)
+          backendAzureRmContainerName: $(variables.backendAzureRmContainerName)
+          backendAzureRmKey: $(variables.backendAzureRmKey)
           workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
       - task: TerraformTaskV2@2
         displayName: 'validate'
@@ -57,25 +57,25 @@ stages :
         - task: TerraformInstaller@0
           displayName: 'install'
           inputs:
-            terraformVersion: ${{ variables.terraform_version}}
+            terraformVersion: $(variables.terraform_version}}
         - task: TerraformTaskV2@2
           displayName: 'init'
           inputs:
             provider: 'azurerm'
             command: 'init'
-            backendServiceArm: ${{ variables.backendServiceArm }}
-            backendAzureRmResourceGroupName: ${{ variables.backendAzureRmResourceGroupName }}
-            backendAzureRmStorageAccountName: ${{ variables.backendAzureRmStorageAccountName }}
-            backendAzureRmContainerName: ${{ variables.backendAzureRmContainerName }}
-            backendAzureRmKey: ${{ variables.backendAzureRmKey }}
+            backendServiceArm: $(variables.backendServiceArm)
+            backendAzureRmResourceGroupName: $(variables.backendAzureRmResourceGroupName)
+            backendAzureRmStorageAccountName: $(variables.backendAzureRmStorageAccountName)
+            backendAzureRmContainerName: $(variables.backendAzureRmContainerName)
+            backendAzureRmKey: $(variables.backendAzureRmKey)
             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
         - task: TerraformTaskV2@2
           displayName: 'plan'
           inputs:
             provider: 'azurerm'
             command: 'plan'
-            commandOptions: '-input=false -var-file="../vars/${{ variables.environment }}.tfvars"'
-            environmentServiceNameAzureRM: ${{ variables.backendServiceArm }}
+            commandOptions: '-input=false -var-file="../vars/$(variables.environment).tfvars"'
+            environmentServiceNameAzureRM: $(variables.backendServiceArm)
             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
 
   - stage: apply
@@ -87,31 +87,31 @@ stages :
         - task: TerraformInstaller@0
           displayName: 'install'
           inputs:
-            terraformVersion: ${{ variables.terraform_version}}
+            terraformVersion: $(variables.terraform_version}}
         - task: TerraformTaskV2@2
           displayName: 'init'
           inputs:
             provider: 'azurerm'
             command: 'init'
-            backendServiceArm: ${{ variables.backendServiceArm }}
-            backendAzureRmResourceGroupName: ${{ variables.backendAzureRmResourceGroupName }}
-            backendAzureRmStorageAccountName: ${{ variables.backendAzureRmStorageAccountName }}
-            backendAzureRmContainerName: ${{ variables.backendAzureRmContainerName }}
-            backendAzureRmKey: ${{ variables.backendAzureRmKey }} 
+            backendServiceArm: $(variables.backendServiceArm)
+            backendAzureRmResourceGroupName: $(variables.backendAzureRmResourceGroupName)
+            backendAzureRmStorageAccountName: $(variables.backendAzureRmStorageAccountName)
+            backendAzureRmContainerName: $(variables.backendAzureRmContainerName)
+            backendAzureRmKey: $(variables.backendAzureRmKey) 
             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
         - task: TerraformTaskV2@2
           displayName: 'plan'
           inputs:
             provider: 'azurerm'
             command: 'plan'
-            commandOptions: '-input=false -var-file="../vars/${{ variables.environment }}.tfvars"'
-            environmentServiceNameAzureRM: ${{ variables.backendServiceArm }}
+            commandOptions: '-input=false -var-file="../vars/$(variables.environment).tfvars"'
+            environmentServiceNameAzureRM: $(variables.backendServiceArm)
             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
         - task: TerraformTaskV2@2
           displayName: 'apply'
           inputs:
             provider: 'azurerm'
             command: 'apply'
-            commandOptions: '-input=false -auto-approve -var-file="../vars/${{ variables.environment }}.tfvars"'
-            environmentServiceNameAzureRM: ${{ variables.backendServiceArm }}
+            commandOptions: '-input=false -auto-approve -var-file="../vars/$(variables.environment).tfvars"'
+            environmentServiceNameAzureRM: $(variables.backendServiceArm)
             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
