@@ -40,12 +40,12 @@ stages :
         inputs:
           command: 'validate'
           
-  - stage: plan
-    dependsOn: [validate]
-    condition: succeeded('validate')
-    jobs:
-      - job: terraform_plan_develop
-        steps:
+  # - stage: plan
+    # dependsOn: [validate]
+    # condition: succeeded('validate')
+    # jobs:
+      # - job: terraform_plan_develop
+        # steps:
         # - task: TerraformInstaller@0
           # displayName: 'install'
           # inputs:
@@ -61,13 +61,13 @@ stages :
             # backendAzureRmContainerName: $(backendAzureRmContainerName)
             # backendAzureRmKey: $(backendAzureRmKey)
             # workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
-        - task: TerraformCLI@0
-          displayName: 'plan'
-          inputs:
-            command: 'plan'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
-            environmentServiceName: $(backendServiceArm)
-            commandOptions: '-input=false -var-file="$(System.DefaultWorkingDirectory)/terraform/vars/$(environment).tfvars"'
+        # - task: TerraformCLI@0
+          # displayName: 'plan'
+          # inputs:
+            # command: 'plan'
+            # workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
+            # environmentServiceName: $(backendServiceArm)
+            # commandOptions: '-input=false -var-file="$(System.DefaultWorkingDirectory)/terraform/vars/$(environment).tfvars"'
 
   # - stage: apply
     # dependsOn: [plan]
