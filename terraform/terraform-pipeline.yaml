@@ -16,27 +16,25 @@ stages :
   - stage: validate
     jobs:
     - job: validate
-      continueOnError: false
       steps:
       - task: TerraformInstaller@0
         displayName: 'install'
         inputs:
           terraformVersion: $(terraform_version)
-      - task: TerraformTaskV2@2
+      - task: TerraformCLI@0
         displayName: 'init'
         inputs:
-          provider: 'azurerm'
           command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
+          backendType: 'azurerm'
           backendServiceArm: $(backendServiceArm)
           backendAzureRmResourceGroupName: $(backendAzureRmResourceGroupName)
           backendAzureRmStorageAccountName: $(backendAzureRmStorageAccountName)
           backendAzureRmContainerName: $(backendAzureRmContainerName)
           backendAzureRmKey: $(backendAzureRmKey)
-          workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
-      - task: TerraformTaskV2@2
+      - task: TerraformCLI@0
         displayName: 'validate'
         inputs:
-          provider: 'azurerm'
           command: 'validate'
           
   - stage: plan
@@ -45,64 +43,63 @@ stages :
     jobs:
       - job: terraform_plan_develop
         steps:
-        - task: TerraformInstaller@0
-          displayName: 'install'
-          inputs:
-            terraformVersion: $(terraform_version}}
-        - task: TerraformTaskV2@2
-          displayName: 'init'
-          inputs:
-            provider: 'azurerm'
-            command: 'init'
-            backendServiceArm: $(backendServiceArm)
-            backendAzureRmResourceGroupName: $(backendAzureRmResourceGroupName)
-            backendAzureRmStorageAccountName: $(backendAzureRmStorageAccountName)
-            backendAzureRmContainerName: $(backendAzureRmContainerName)
-            backendAzureRmKey: $(backendAzureRmKey)
-            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
-        - task: TerraformTaskV2@2
+        # - task: TerraformInstaller@0
+          # displayName: 'install'
+          # inputs:
+            # terraformVersion: $(terraform_version}}
+        # - task: TerraformTaskV2@2
+          # displayName: 'init'
+          # inputs:
+            # provider: 'azurerm'
+            # command: 'init'
+            # backendServiceArm: $(backendServiceArm)
+            # backendAzureRmResourceGroupName: $(backendAzureRmResourceGroupName)
+            # backendAzureRmStorageAccountName: $(backendAzureRmStorageAccountName)
+            # backendAzureRmContainerName: $(backendAzureRmContainerName)
+            # backendAzureRmKey: $(backendAzureRmKey)
+            # workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
+        - task: TerraformCLI@0
           displayName: 'plan'
           inputs:
-            provider: 'azurerm'
             command: 'plan'
-            commandOptions: '-input=false -var-file="../vars/$(environment).tfvars"'
-            environmentServiceNameAzureRM: $(backendServiceArm)
             workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
+            environmentServiceName: $(backendServiceArm)
+            commandOptions: '-input=false -var-file="$(System.DefaultWorkingDirectory)/terraform/vars/$(environment).tfvars"'
 
-  - stage: apply
-    dependsOn: [plan]
-    condition: succeeded('plan')
-    jobs:
-      - job: terraform_apply_develop
-        steps:
-        - task: TerraformInstaller@0
-          displayName: 'install'
-          inputs:
-            terraformVersion: $(terraform_version}}
-        - task: TerraformTaskV2@2
-          displayName: 'init'
-          inputs:
-            provider: 'azurerm'
-            command: 'init'
-            backendServiceArm: $(backendServiceArm)
-            backendAzureRmResourceGroupName: $(backendAzureRmResourceGroupName)
-            backendAzureRmStorageAccountName: $(backendAzureRmStorageAccountName)
-            backendAzureRmContainerName: $(backendAzureRmContainerName)
-            backendAzureRmKey: $(backendAzureRmKey) 
-            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
-        - task: TerraformTaskV2@2
-          displayName: 'plan'
-          inputs:
-            provider: 'azurerm'
-            command: 'plan'
-            commandOptions: '-input=false -var-file="../vars/$(environment).tfvars"'
-            environmentServiceNameAzureRM: $(backendServiceArm)
-            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
-        - task: TerraformTaskV2@2
-          displayName: 'apply'
-          inputs:
-            provider: 'azurerm'
-            command: 'apply'
-            commandOptions: '-input=false -auto-approve -var-file="../vars/$(environment).tfvars"'
-            environmentServiceNameAzureRM: $(backendServiceArm)
-            workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
+  # - stage: apply
+    # dependsOn: [plan]
+    # condition: succeeded('plan')
+    # jobs:
+      # - job: terraform_apply_develop
+        # steps:
+        # - task: TerraformInstaller@0
+          # displayName: 'install'
+          # inputs:
+            # terraformVersion: $(terraform_version}}
+        # - task: TerraformTaskV2@2
+          # displayName: 'init'
+          # inputs:
+            # provider: 'azurerm'
+            # command: 'init'
+            # backendServiceArm: $(backendServiceArm)
+            # backendAzureRmResourceGroupName: $(backendAzureRmResourceGroupName)
+            # backendAzureRmStorageAccountName: $(backendAzureRmStorageAccountName)
+            # backendAzureRmContainerName: $(backendAzureRmContainerName)
+            # backendAzureRmKey: $(backendAzureRmKey) 
+            # workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
+        # - task: TerraformTaskV2@2
+          # displayName: 'plan'
+          # inputs:
+            # provider: 'azurerm'
+            # command: 'plan'
+            # commandOptions: '-input=false -var-file="../vars/$(environment).tfvars"'
+            # environmentServiceNameAzureRM: $(backendServiceArm)
+            # workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
+        # - task: TerraformTaskV2@2
+          # displayName: 'apply'
+          # inputs:
+            # provider: 'azurerm'
+            # command: 'apply'
+            # commandOptions: '-input=false -auto-approve -var-file="../vars/$(environment).tfvars"'
+            # environmentServiceNameAzureRM: $(backendServiceArm)
+            # workingDirectory: '$(System.DefaultWorkingDirectory)/terraform/'
