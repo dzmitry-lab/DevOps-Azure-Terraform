@@ -3,6 +3,9 @@ name: $(BuildDefinitionName)_$(date:yyyyMMdd)$(rev:.r)
 trigger: none
 pr: none
 
+pool:
+  vmImage: 'ubuntu-latest'
+
 variables:
   backendServiceArm: 'Azure-Free-Sub Service Connection'
   backendAzureRmResourceGroupName: 'Azure-Terraform'
